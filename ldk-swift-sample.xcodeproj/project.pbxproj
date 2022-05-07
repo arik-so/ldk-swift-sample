@@ -14,6 +14,15 @@
 		0771F36A2810BAFC00FDF4D9 /* ldk_swift_sampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F3692810BAFC00FDF4D9 /* ldk_swift_sampleTests.swift */; };
 		0771F3742810BAFC00FDF4D9 /* ldk_swift_sampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F3732810BAFC00FDF4D9 /* ldk_swift_sampleUITests.swift */; };
 		0771F3762810BAFC00FDF4D9 /* ldk_swift_sampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F3752810BAFC00FDF4D9 /* ldk_swift_sampleUITestsLaunchTests.swift */; };
+		0771F38E2810BEAC00FDF4D9 /* CombineUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F38B2810BEAB00FDF4D9 /* CombineUtils.swift */; };
+		0771F38F2810BEAC00FDF4D9 /* CombineUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F38B2810BEAB00FDF4D9 /* CombineUtils.swift */; };
+		0771F3902810BEAC00FDF4D9 /* BlockchainObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F38C2810BEAB00FDF4D9 /* BlockchainObserver.swift */; };
+		0771F3912810BEAC00FDF4D9 /* BlockchainObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F38C2810BEAB00FDF4D9 /* BlockchainObserver.swift */; };
+		0771F3922810BEAC00FDF4D9 /* RegtestBlockchainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F38D2810BEAC00FDF4D9 /* RegtestBlockchainManager.swift */; };
+		0771F3932810BEAC00FDF4D9 /* RegtestBlockchainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F38D2810BEAC00FDF4D9 /* RegtestBlockchainManager.swift */; };
+		0771F3952810C07500FDF4D9 /* PolarIntegrationSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F3942810C07500FDF4D9 /* PolarIntegrationSample.swift */; };
+		0771F39A2811A37D00FDF4D9 /* LDKFramework.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0771F3992811A37D00FDF4D9 /* LDKFramework.xcframework */; };
+		0771F39B2811A37D00FDF4D9 /* LDKFramework.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 0771F3992811A37D00FDF4D9 /* LDKFramework.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -33,6 +42,20 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		0771F39C2811A37D00FDF4D9 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				0771F39B2811A37D00FDF4D9 /* LDKFramework.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0771F3552810BAF900FDF4D9 /* ldk-swift-sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ldk-swift-sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0771F3582810BAF900FDF4D9 /* ldk_swift_sampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ldk_swift_sampleApp.swift; sourceTree = "<group>"; };
@@ -44,6 +67,12 @@
 		0771F36F2810BAFC00FDF4D9 /* ldk-swift-sampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ldk-swift-sampleUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0771F3732810BAFC00FDF4D9 /* ldk_swift_sampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ldk_swift_sampleUITests.swift; sourceTree = "<group>"; };
 		0771F3752810BAFC00FDF4D9 /* ldk_swift_sampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ldk_swift_sampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		0771F38B2810BEAB00FDF4D9 /* CombineUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombineUtils.swift; sourceTree = "<group>"; };
+		0771F38C2810BEAB00FDF4D9 /* BlockchainObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockchainObserver.swift; sourceTree = "<group>"; };
+		0771F38D2810BEAC00FDF4D9 /* RegtestBlockchainManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegtestBlockchainManager.swift; sourceTree = "<group>"; };
+		0771F3942810C07500FDF4D9 /* PolarIntegrationSample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolarIntegrationSample.swift; sourceTree = "<group>"; };
+		0771F3992811A37D00FDF4D9 /* LDKFramework.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = LDKFramework.xcframework; path = "../ldk-swift/bindings/bin/LDKFramework.xcframework"; sourceTree = "<group>"; };
+		078903FC2826243C007C97E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0771F39A2811A37D00FDF4D9 /* LDKFramework.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +108,7 @@
 				0771F3682810BAFC00FDF4D9 /* ldk-swift-sampleTests */,
 				0771F3722810BAFC00FDF4D9 /* ldk-swift-sampleUITests */,
 				0771F3562810BAF900FDF4D9 /* Products */,
+				0771F3822810BB2300FDF4D9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -94,8 +125,13 @@
 		0771F3572810BAF900FDF4D9 /* ldk-swift-sample */ = {
 			isa = PBXGroup;
 			children = (
+				078903FC2826243C007C97E8 /* Info.plist */,
 				0771F3582810BAF900FDF4D9 /* ldk_swift_sampleApp.swift */,
 				0771F35A2810BAF900FDF4D9 /* ContentView.swift */,
+				0771F38C2810BEAB00FDF4D9 /* BlockchainObserver.swift */,
+				0771F38B2810BEAB00FDF4D9 /* CombineUtils.swift */,
+				0771F38D2810BEAC00FDF4D9 /* RegtestBlockchainManager.swift */,
+				0771F3942810C07500FDF4D9 /* PolarIntegrationSample.swift */,
 				0771F35C2810BAFC00FDF4D9 /* Assets.xcassets */,
 				0771F35E2810BAFC00FDF4D9 /* Preview Content */,
 			);
@@ -127,6 +163,14 @@
 			path = "ldk-swift-sampleUITests";
 			sourceTree = "<group>";
 		};
+		0771F3822810BB2300FDF4D9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0771F3992811A37D00FDF4D9 /* LDKFramework.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -137,6 +181,7 @@
 				0771F3512810BAF900FDF4D9 /* Sources */,
 				0771F3522810BAF900FDF4D9 /* Frameworks */,
 				0771F3532810BAF900FDF4D9 /* Resources */,
+				0771F39C2811A37D00FDF4D9 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -258,6 +303,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				0771F35B2810BAF900FDF4D9 /* ContentView.swift in Sources */,
+				0771F3922810BEAC00FDF4D9 /* RegtestBlockchainManager.swift in Sources */,
+				0771F3902810BEAC00FDF4D9 /* BlockchainObserver.swift in Sources */,
+				0771F3952810C07500FDF4D9 /* PolarIntegrationSample.swift in Sources */,
+				0771F38E2810BEAC00FDF4D9 /* CombineUtils.swift in Sources */,
 				0771F3592810BAF900FDF4D9 /* ldk_swift_sampleApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -266,7 +315,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0771F3932810BEAC00FDF4D9 /* RegtestBlockchainManager.swift in Sources */,
+				0771F3912810BEAC00FDF4D9 /* BlockchainObserver.swift in Sources */,
 				0771F36A2810BAFC00FDF4D9 /* ldk_swift_sampleTests.swift in Sources */,
+				0771F38F2810BEAC00FDF4D9 /* CombineUtils.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,8 +469,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ldk-swift-sample/Preview Content\"";
+				DEVELOPMENT_TEAM = B7G2QT8J3L;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ldk-swift-sample/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -445,8 +499,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ldk-swift-sample/Preview Content\"";
+				DEVELOPMENT_TEAM = B7G2QT8J3L;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ldk-swift-sample/Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
