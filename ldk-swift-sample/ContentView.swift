@@ -14,7 +14,7 @@ struct ContentView: View {
     @State private var multiPeerSimulation: PolarIntegrationSample.MultiPeerSimulator? = nil
     
 	var body: some View {
-
+        
 		Button(action: {
             self.isRunningTestFlow = true
 			let sample = PolarIntegrationSample()
@@ -42,6 +42,16 @@ struct ContentView: View {
                 Text("Simulate multiple peers")
             }
         }
+        
+        Button {
+            let tester = PolarIntegrationSample.RapidGossipSyncTester()
+            Task {
+                try? await tester.testRapidGossipSync()
+            }
+        } label: {
+            Text("test rapid gossip sync")
+        }
+        
 
 
 	}
