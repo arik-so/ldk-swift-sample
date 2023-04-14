@@ -23,8 +23,8 @@ public class PolarIntegrationSample {
 	static let BOGUS_OUTPUT_SCRIPT: [UInt8] = [0, 1, 0]
 
 	// EDIT ME
-	static let POLAR_LND_PEER_PUBKEY_HEX = "02e62868ab834e7c062a929ca2f22ee8707827a5821e3a8eec343f106cbee24e7c"
-	static let POLAR_LND_PEER_INVOICE = "lnbcrt420690n1p3xrgslpp50n0wgusa2lzv56u6cqqlcdllmgwtpyvtz9czpc88ggvwwp76gk8sdqqcqzpgxqyz5vqsp5j6futhfxhn38rkmuepz8hsjj4zh66z4xqspemyg20l4r7kwnhh8s9qyyssqad3n9lzkp4pl358en022q5qm3ru57crmy4c70kq2s60apupdmm4xfn85m85dv2eu54m4dv2v7ldugwankz03ezk7k5l76rz6m70f05gqre4g8p"
+	static let POLAR_LND_PEER_PUBKEY_HEX = "033c37aad8a43223bcc9b0847a0ca28c43440b3b095fed4bd443fa6b0f0e91ddb6"
+	static let POLAR_LND_PEER_INVOICE = "lnbcrt20u1pjr3kjdpp5mvcutejqkg6gr4t0aqw8z7ms8956wrrgv5vxt9lp0ecfl4zwxvrqdqqcqzpgxqyz5vqsp5ghjka8vmrs8whdddrm7yrpfl6aj066gpf36cm604khn8yxlug5tq9qyyssq08hwmz0acenr77j2m26rmv5c7d9ze3jfh6d558uwl2vvarj2tlu87kg377sm0mxy4s84vhltm2555mjf7x8kkda70v4kyrty62egfrqqgjphl7"
 
 	func testPolarFlow() async throws {
 		let rpcInterface = try RegtestBlockchainManager(rpcProtocol: .http, rpcDomain: "localhost", rpcPort: 18443, rpcUsername: "polaruser", rpcPassword: "polarpass")
@@ -41,7 +41,6 @@ public class PolarIntegrationSample {
 		let timestamp_seconds = UInt64(NSDate().timeIntervalSince1970)
 		let timestamp_nanos = UInt32(truncating: NSNumber(value: timestamp_seconds * 1000 * 1000))
         let keysManager = KeysManager(seed: seed, startingTimeSecs: timestamp_seconds, startingTimeNanos: timestamp_nanos)
-		let keysInterface = keysManager.asKeysInterface()
         let logger = LDKTraitImplementations.PolarLogger()
 
         let config = UserConfig.initWithDefault()
@@ -51,7 +50,7 @@ public class PolarIntegrationSample {
 		let chaintipHash = try await rpcInterface.getChaintipHash()
 		let reversedChaintipHash = [UInt8](chaintipHash.reversed())
 		let chaintipHeight = try await rpcInterface.getChaintipHeight()
-        let networkGraph = NetworkGraph(genesisHash: reversedGenesisHash, logger: logger)
+        let networkGraph = NetworkGraph(network: lightningNetwork, logger: logger)
 
         let scoringParams = ProbabilisticScoringParameters.initWithDefault()
         let probabalisticScorer = ProbabilisticScorer(params: scoringParams, networkGraph: networkGraph, logger: logger)
@@ -72,13 +71,11 @@ public class PolarIntegrationSample {
 		let channelManagerAndNetworkGraphPersisterAndEventHandler = LDKTraitImplementations.PolarChannelManagerAndNetworkGraphPersisterAndEventHandler()
         let chainMonitor = ChainMonitor(chainSource: nil, broadcaster: broadcaster, logger: logger, feeest: feeEstimator, persister: channelMonitorPersister)
 
-		let channelManagerConstructor = ChannelManagerConstructor(network: lightningNetwork, config: config, current_blockchain_tip_hash: reversedChaintipHash, current_blockchain_tip_height: UInt32(chaintipHeight), keys_interface: keysInterface, fee_estimator: feeEstimator, chain_monitor: chainMonitor, net_graph: networkGraph, tx_broadcaster: broadcaster, logger: logger)
+        let cmcParams = ChannelManagerConstructionParameters(config: config, entropySource: keysManager.asEntropySource(), nodeSigner: keysManager.asNodeSigner(), signerProvider: keysManager.asSignerProvider(), feeEstimator: feeEstimator, chainMonitor: chainMonitor, txBroadcaster: broadcaster, logger: logger)
+        let channelManagerConstructor = ChannelManagerConstructor(network: lightningNetwork, currentBlockchainTipHash: reversedChaintipHash, currentBlockchainTipHeight: UInt32(chaintipHeight), netGraph: networkGraph, params: cmcParams)
 		let channelManager = channelManagerConstructor.channelManager
 		let peerManager = channelManagerConstructor.peerManager
         let tcpPeerHandler = channelManagerConstructor.getTCPPeerHandler()
-        if let netGraph = channelManagerConstructor.net_graph {
-            print("net graph available!")
-        }
 
 		struct Listener: BlockchainListener {
 			private let channelManager: ChannelManager
@@ -104,7 +101,7 @@ public class PolarIntegrationSample {
 		let listener = Listener(channelManager: channelManager, chainMonitor: chainMonitor)
 		rpcInterface.registerListener(listener);
 		async let monitor = try rpcInterface.monitorBlockchain()
-		channelManagerConstructor.chain_sync_completed(persister: channelManagerAndNetworkGraphPersisterAndEventHandler, scorer: multiThreadedScorer)
+		channelManagerConstructor.chainSyncCompleted(persister: channelManagerAndNetworkGraphPersisterAndEventHandler)
 
 		guard let lndPubkey = PolarIntegrationSample.hexStringToBytes(hexString: PolarIntegrationSample.POLAR_LND_PEER_PUBKEY_HEX) else {
 			throw TestFlowExceptions.hexParsingError
@@ -118,7 +115,7 @@ public class PolarIntegrationSample {
 		let channelValue: UInt64 = 1_300_000 // 1.3 million satoshis, or 0.013 BTC
 		let channelValueBtcString = "0.013"
 		let reserveAmount: UInt64 = 1000 // a thousand satoshis rserve
-        let channelOpenResult = channelManager.createChannel(theirNetworkKey: lndPubkey, channelValueSatoshis: channelValue, pushMsat: reserveAmount, userChannelId: 42, overrideConfig: config)
+        let channelOpenResult = channelManager.createChannel(theirNetworkKey: lndPubkey, channelValueSatoshis: channelValue, pushMsat: reserveAmount, userChannelId: [UInt8](repeating: 1, count: 16), overrideConfig: config)
 
 		if let channelOpenError = channelOpenResult.getError() {
 			print("error type: \(channelOpenError.getValueType())")
@@ -130,7 +127,7 @@ public class PolarIntegrationSample {
 				print("excessive fee rate error: \(error.getErr())")
 			} else if let error = channelOpenError.getValueAsIncompatibleShutdownScript() {
 				print("incompatible shutdown script: \(error.getScript())")
-			} else if let error = channelOpenError.getValueAsRouteError() {
+			} else if let error = channelOpenError.getValueAsInvalidRoute() {
 				print("route error: \(error.getErr())")
 			}
 			return
@@ -181,9 +178,6 @@ public class PolarIntegrationSample {
 			try await Task.sleep(nanoseconds: 0_100_000_000)
 		}
 
-		guard let invoicePayer = channelManagerConstructor.payer else {
-			throw TestFlowExceptions.missingInvoicePayer
-		}
 		let invoiceResult = Invoice.fromStr(s: PolarIntegrationSample.POLAR_LND_PEER_INVOICE)
 
 
@@ -195,7 +189,7 @@ public class PolarIntegrationSample {
         // channelManagerConstructor.interrupt(tcpPeerHandler: tcpPeerHandler)
         // return
         
-		let invoicePaymentResult = invoicePayer.payInvoice(invoice: invoice)
+        let invoicePaymentResult = Bindings.payInvoice(invoice: invoice, retryStrategy: Retry.initWithAttempts(a: 3), channelmanager: channelManager)
 
 		do {
 			// process payment
@@ -215,6 +209,14 @@ public class PolarIntegrationSample {
             // sleep for 100ms
             try await Task.sleep(nanoseconds: 0_100_000_000)
         }
+        
+        
+        
+        let rapidSync = RapidGossipSync(networkGraph: networkGraph, logger: logger);
+        let updateResult = rapidSync.updateNetworkGraph(updateData: []);
+        // updateResult.
+        
+        
         
         print(channelManagerConstructor.peerManager.getPeerNodeIds())
 
@@ -270,7 +272,7 @@ public class PolarIntegrationSample {
 	class LDKTraitImplementations {
 
 		class PolarFeeEstimator: FeeEstimator {
-            override func getEstSatPer_1000Weight(confirmationTarget: Bindings.ConfirmationTarget) -> UInt32 {
+            override func getEstSatPer1000Weight(confirmationTarget: Bindings.ConfirmationTarget) -> UInt32 {
                 return 253
             }
 		}
@@ -327,7 +329,7 @@ public class PolarIntegrationSample {
 
 		}
 
-		class PolarChannelManagerAndNetworkGraphPersisterAndEventHandler: Persister, ExtendedChannelManagerPersister {
+        class PolarChannelManagerAndNetworkGraphPersisterAndEventHandler: Persister, ExtendedChannelManagerPersister {
 
 			private let eventTracker = PendingEventTracker()
 
@@ -339,12 +341,16 @@ public class PolarIntegrationSample {
 					await self.eventTracker.awaitAddition()
 				}
 			}
-
-			func handle_event(event: Event) {
-				Task {
-					await self.eventTracker.addEvent(event: event)
-				}
-			}
+            
+            func handleEvent(event: LightningDevKit.Event) {
+                Task {
+                    await self.eventTracker.addEvent(event: event)
+                }
+            }
+            
+            override func persistScorer(scorer: Bindings.WriteableScore) -> Bindings.Result_NoneErrorZ {
+                .initWithOk()
+            }
             
             override func persistManager(channelManager: Bindings.ChannelManager) -> Bindings.Result_NoneErrorZ {
                 .initWithOk()
@@ -407,7 +413,6 @@ public class PolarIntegrationSample {
         private var rpcInterface: BlockchainObserver!
         
         private var keysManager: KeysManager!
-        private var keysInterface: KeysInterface!
         private var config: UserConfig!
         private var networkGraph: NetworkGraph!
         private var multiThreadedScorer: MultiThreadedLockableScore!
@@ -434,7 +439,6 @@ public class PolarIntegrationSample {
             let timestamp_seconds = UInt64(NSDate().timeIntervalSince1970)
             let timestamp_nanos = UInt32(truncating: NSNumber(value: timestamp_seconds * 1000 * 1000))
             keysManager = KeysManager(seed: seed, startingTimeSecs: timestamp_seconds, startingTimeNanos: timestamp_nanos)
-            keysInterface = keysManager.asKeysInterface()
             logger = LDKTraitImplementations.MuteLogger()
 
             config = UserConfig.initWithDefault()
@@ -450,7 +454,7 @@ public class PolarIntegrationSample {
             let reversedGenesisHash = PolarIntegrationSample.hexStringToBytes(hexString: reversedGenesisHashHex)!
             let chaintipHeight = 0
             let reversedChaintipHash = reversedGenesisHash
-            networkGraph = NetworkGraph(genesisHash: reversedGenesisHash, logger: logger)
+            networkGraph = NetworkGraph(network: lightningNetwork, logger: logger)
             
             print("Genesis hash reversed: \(PolarIntegrationSample.bytesToHexString(bytes: reversedGenesisHash))")
 
@@ -468,12 +472,13 @@ public class PolarIntegrationSample {
             let channelManagerAndNetworkGraphPersisterAndEventHandler = LDKTraitImplementations.PolarChannelManagerAndNetworkGraphPersisterAndEventHandler()
             let chainMonitor = ChainMonitor(chainSource: nil, broadcaster: broadcaster, logger: logger, feeest: feeEstimator, persister: channelMonitorPersister)
 
-            channelManagerConstructor = ChannelManagerConstructor(network: lightningNetwork, config: config, current_blockchain_tip_hash: reversedChaintipHash, current_blockchain_tip_height: UInt32(chaintipHeight), keys_interface: keysInterface, fee_estimator: feeEstimator, chain_monitor: chainMonitor, net_graph: networkGraph, tx_broadcaster: broadcaster, logger: logger)
+            let cmcParams = ChannelManagerConstructionParameters(config: config, entropySource: keysManager.asEntropySource(), nodeSigner: keysManager.asNodeSigner(), signerProvider: keysManager.asSignerProvider(), feeEstimator: feeEstimator, chainMonitor: chainMonitor, txBroadcaster: broadcaster, logger: logger)
+            channelManagerConstructor = ChannelManagerConstructor(network: lightningNetwork, currentBlockchainTipHash:reversedChaintipHash, currentBlockchainTipHeight: UInt32(chaintipHeight), netGraph: networkGraph, params: cmcParams)
             let channelManager = channelManagerConstructor.channelManager
             let peerManager = channelManagerConstructor.peerManager
             let tcpPeerHandler = channelManagerConstructor.getTCPPeerHandler()
             
-            channelManagerConstructor.chain_sync_completed(persister: channelManagerAndNetworkGraphPersisterAndEventHandler, scorer: multiThreadedScorer)
+            channelManagerConstructor.chainSyncCompleted(persister: channelManagerAndNetworkGraphPersisterAndEventHandler)
             
             let interPeerConnectionInterval = 0
             let pauseForNextPeer = { () async in
@@ -595,8 +600,8 @@ public class PolarIntegrationSample {
             let reversedGenesisHash = PolarIntegrationSample.hexStringToBytes(hexString: reversedGenesisHashHex)!
             
             let logger = LDKTraitImplementations.PolarLogger()
-            let networkGraph = NetworkGraph(genesisHash: reversedGenesisHash, logger: logger)
-            let rapidSync = RapidGossipSync(networkGraph: networkGraph)
+            let networkGraph = NetworkGraph(network: .Bitcoin, logger: logger)
+            let rapidSync = RapidGossipSync(networkGraph: networkGraph, logger: logger)
             
             let gossipDataRaw = [UInt8](data)
             print("Applying rapid sync data…")
@@ -636,8 +641,8 @@ public class PolarIntegrationSample {
             let payerPubkey = hexStringToBytes(hexString: "0242a4ae0c5bef18048fbecf995094b74bfb0f7391418d71ed394784373f41e4f3")!
             let recipientPubkey = hexStringToBytes(hexString: "03864ef025fde8fb587d989186ce6a4a186895ee44a926bfc370e2c366597a3f8f")!
             
-            let paymentParameters = PaymentParameters.initForKeysend(payeePubkey: recipientPubkey)
-            let routeParameters = RouteParameters(paymentParamsArg: paymentParameters, finalValueMsatArg: 500, finalCltvExpiryDeltaArg: 3)
+            let paymentParameters = PaymentParameters.initForKeysend(payeePubkey: recipientPubkey, finalCltvExpiryDelta: 3)
+            let routeParameters = RouteParameters(paymentParamsArg: paymentParameters, finalValueMsatArg: 500)
             
             print("STEP A")
             

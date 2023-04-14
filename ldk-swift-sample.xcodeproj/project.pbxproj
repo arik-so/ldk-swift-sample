@@ -20,8 +20,7 @@
 		0771F3912810BEAC00FDF4D9 /* BlockchainObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F38C2810BEAB00FDF4D9 /* BlockchainObserver.swift */; };
 		0771F3922810BEAC00FDF4D9 /* RegtestBlockchainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F38D2810BEAC00FDF4D9 /* RegtestBlockchainManager.swift */; };
 		0771F3932810BEAC00FDF4D9 /* RegtestBlockchainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F38D2810BEAC00FDF4D9 /* RegtestBlockchainManager.swift */; };
-		07CE82E52947F8B1008E1869 /* LightningDevKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07CE82E42947F8B1008E1869 /* LightningDevKit.xcframework */; };
-		07CE82E62947F8B1008E1869 /* LightningDevKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 07CE82E42947F8B1008E1869 /* LightningDevKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		078B835D29957F3200E38C6A /* LightningDevKit in Frameworks */ = {isa = PBXBuildFile; productRef = 078B835C29957F3200E38C6A /* LightningDevKit */; };
 		07CE82E7294800A4008E1869 /* PolarIntegrationSample.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0771F3942810C07500FDF4D9 /* PolarIntegrationSample.swift */; };
 /* End PBXBuildFile section */
 
@@ -42,20 +41,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		0789040D2826CC4D007C97E8 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				07CE82E62947F8B1008E1869 /* LightningDevKit.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		0771F3552810BAF900FDF4D9 /* ldk-swift-sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ldk-swift-sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0771F3582810BAF900FDF4D9 /* ldk_swift_sampleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ldk_swift_sampleApp.swift; sourceTree = "<group>"; };
@@ -72,7 +57,6 @@
 		0771F38D2810BEAC00FDF4D9 /* RegtestBlockchainManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegtestBlockchainManager.swift; sourceTree = "<group>"; };
 		0771F3942810C07500FDF4D9 /* PolarIntegrationSample.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PolarIntegrationSample.swift; sourceTree = "<group>"; };
 		078903FC2826243C007C97E8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		07CE82E42947F8B1008E1869 /* LightningDevKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = LightningDevKit.xcframework; path = "../ldk-parser/logs/LightningDevKit (1)/LightningDevKit.xcframework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,7 +64,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07CE82E52947F8B1008E1869 /* LightningDevKit.xcframework in Frameworks */,
+				078B835D29957F3200E38C6A /* LightningDevKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,7 +150,6 @@
 		0771F3822810BB2300FDF4D9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				07CE82E42947F8B1008E1869 /* LightningDevKit.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -181,13 +164,15 @@
 				0771F3512810BAF900FDF4D9 /* Sources */,
 				0771F3522810BAF900FDF4D9 /* Frameworks */,
 				0771F3532810BAF900FDF4D9 /* Resources */,
-				0789040D2826CC4D007C97E8 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "ldk-swift-sample";
+			packageProductDependencies = (
+				078B835C29957F3200E38C6A /* LightningDevKit */,
+			);
 			productName = "ldk-swift-sample";
 			productReference = 0771F3552810BAF900FDF4D9 /* ldk-swift-sample.app */;
 			productType = "com.apple.product-type.application";
@@ -260,6 +245,9 @@
 				Base,
 			);
 			mainGroup = 0771F34C2810BAF900FDF4D9;
+			packageReferences = (
+				078B835B29957F3200E38C6A /* XCRemoteSwiftPackageReference "ldk-swift" */,
+			);
 			productRefGroup = 0771F3562810BAF900FDF4D9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -635,6 +623,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		078B835B29957F3200E38C6A /* XCRemoteSwiftPackageReference "ldk-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/lightningdevkit/ldk-swift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		078B835C29957F3200E38C6A /* LightningDevKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 078B835B29957F3200E38C6A /* XCRemoteSwiftPackageReference "ldk-swift" */;
+			productName = LightningDevKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0771F34D2810BAF900FDF4D9 /* Project object */;
 }
